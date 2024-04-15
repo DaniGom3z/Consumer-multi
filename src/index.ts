@@ -2,14 +2,14 @@ import { connect } from "amqplib";
 import axios from "axios";
 async function consumeMessages() {
     try {
-      const connection = await connect("amqp://34.196.166.98/");
+      const connection = await connect("amqp://52.205.27.36/");
       const channel = await connection.createChannel();
   
-      const queue = "prueba";
+      const queue = "mqtt";
       const exchangeName = "amq.topic";
   
       await channel.assertQueue(queue, { durable: true });
-      await channel.bindQueue(queue, exchangeName, "daniel");
+      await channel.bindQueue(queue, exchangeName, "esp32.mqtt");
   
       console.log("Waiting for messages...");
   
@@ -25,7 +25,8 @@ async function consumeMessages() {
               humidity,
               food,
               water,
-              enclosureId
+              enclosureId,
+              date
             } = encierroData;
   
             if (
@@ -33,9 +34,10 @@ async function consumeMessages() {
               humidity &&
               food &&
               water &&
-              enclosureId
+              enclosureId &&
+              date
             ) {
-              await createEnclonsure(temperature, humidity, food, water,enclosureId);
+              await createEnclonsure(temperature, humidity, food, water,enclosureId,date);
               console.log("Encierro creado");
               await channel.ack(message);
             } else {
@@ -58,7 +60,8 @@ async function consumeMessages() {
     humidity,
     food,
     water,
-    enclosureId
+    enclosureId,
+    date
   ) {
 
     temperature = temperature || null;
@@ -71,12 +74,13 @@ async function consumeMessages() {
       humidity: humidity,
       food: food,
       water: water,
-      enclosureId:enclosureId
+      enclosureId:enclosureId,
+      date:date
     };
 
     try {
       console.log("Datos a enviar a la API:", dataToSend);
-      await axios.post("http://localhost:5000/enclosure", dataToSend);
+      await axios.post("http://54.86.99.3:5000/enclosure", dataToSend);
     } catch (error) {
       console.error("Error al crear enclonsure:", error);
     }

@@ -26,6 +26,7 @@ async function consumeMessages() {
               food,
               water,
               enclosureId,
+              datoId,
               date
             } = encierroData;
   
@@ -35,9 +36,10 @@ async function consumeMessages() {
               food &&
               water &&
               enclosureId &&
+              datoId &&
               date
             ) {
-              await createEnclonsure(temperature, humidity, food, water,enclosureId,date);
+              await createEnclonsure(temperature, humidity, food, water,enclosureId,datoId,date);
               console.log("Encierro creado");
               await channel.ack(message);
             } else {
@@ -61,6 +63,7 @@ async function consumeMessages() {
     food,
     water,
     enclosureId,
+    datoId,
     date
   ) {
 
@@ -75,6 +78,7 @@ async function consumeMessages() {
       food: food,
       water: water,
       enclosureId:enclosureId,
+      datoId:datoId,
       date:date
     };
 
